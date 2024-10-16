@@ -1,0 +1,19 @@
+
+:root {
+    --card-info-z: 50;
+    --card-z: 100;
+    --card-canvas-z: 200;
+    --card-text-z: 300;
+    --card-hover-z: 500;
+    --draggable-minion-z: 800;
+    --effects-z: 1000;
+}
+
+@font-face {
+    font-family: TitleFont;
+    src: url('fonts/belwe\ bold\ bt.ttf');
+}
+@font-face {
+    font-family: TextFont;
+    src: url('fonts/FRANKGO.ttf');
+}

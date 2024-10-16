@@ -1,0 +1,6 @@
+.effect {
+    position: absolute;
+}
+.effect > img {
+width: 100%;
+}

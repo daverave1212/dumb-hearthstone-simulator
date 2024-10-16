@@ -1,0 +1,38 @@
+
+.board {
+    width: 100%;
+    height: 100vh;
+    max-height: 95vh;
+    position: relative;
+
+    background-image: url('Board.webp');
+    background-position: center;
+    background-size: cover;
+
+    overflow: hidden;
+}
+
+.board .enemy-minions, .board .friendly-minions {
+    border: solid gray 3px;
+    position: absolute;
+    width: 100%;
+    height: 14vh;
+}
+
+.board .enemy-minions {
+    top: 30vh;
+}
+.board .friendly-minions {
+    top: 49vh;
+}
+
+
+/* .board .card:hover .card-graphic {
+    margin-top: -5vh;
+    transition: 0.25s;
+} */
+
+
+.board .info-card {
+    position: absolute;
+}
