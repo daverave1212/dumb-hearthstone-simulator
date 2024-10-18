@@ -1,5 +1,6 @@
 import { GET_CARD_WIDTH, GET_CARD_HEIGHT } from "./CardGraphicsAndSizes.mjs"
 import { waitForConditionAsync } from "../lib/utils.mjs"
+import { getCardTransform } from "./Card.mjs"
 
 export const GET_HAND_RADIUS = () => GET_CARD_WIDTH() * 6
 export const GET_HAND_TOTAL_ANGLE = () => 45
@@ -48,4 +49,11 @@ export function getHandCardPosition(nCards, atX, atY) {
         posAndRots.push({ x: thisX, y: thisY, zIndex: zIndex, rotation: thisAngle + 90 })
     }
     return posAndRots
+}
+
+export function areCoordsInCard(cardDiv, { x, y }) {
+    const cardRect = cardDiv.getBoundingClientRect()
+    const isXInside = cardRect.left < x && x < cardRect.right
+    const isYInside = cardRect.top < y && y < cardRect.bottom
+    return isXInside && isYInside
 }

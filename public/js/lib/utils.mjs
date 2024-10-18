@@ -109,6 +109,24 @@ function randomizeArray(array_a){
         array_a[randomizeArrayIndex] = auxRandomize;
     }
 }
+export function arrayDiff(arrayA, arrayB) {
+    const onlyArrayA = []
+    const both = []
+    const onlyArrayB = []
+    for (const elemA of arrayA) {
+        if (arrayB.includes(elemA)) {
+            both.push(elemA)
+        } else {
+            onlyArrayA.push(elemA)
+        }
+    }
+    for (const elemB of arrayB) {
+        if (arrayA.includes(elemB) == false) {
+            onlyArrayB.push(elemB)
+        }
+    }
+    return { left: onlyArrayA, both, right: onlyArrayB }
+}
 
 
 

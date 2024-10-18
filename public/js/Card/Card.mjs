@@ -2,8 +2,9 @@
 
 
 
-import { dom, drawCurvedTextBezier, drawImageOnCanvasAsync, getRelativePercent, drawText } from '../lib/utils.mjs'
+import { dom, drawCurvedTextBezier, drawImageOnCanvasAsync, getRelativePercent, drawText, arrayDiff } from '../lib/utils.mjs'
 import { GET_CARD_FRAME_HEIGHT, GET_CARD_HEIGHT, GET_CARD_WIDTH, MINION_HEIGHT, MINION_WIDTH, createCardGraphicCanvas, createMinionGraphicCanvasAsync } from './CardGraphicsAndSizes.mjs'
+import { areCoordsInCard } from './CardUtils.mjs'
 
 export const GET_STAT_FONT_SIZE = () => 61 / 383 * GET_CARD_FRAME_HEIGHT()
 export const GET_TEXT_FONT_SIZE = () => GET_CARD_FRAME_HEIGHT() * 0.043
@@ -163,6 +164,58 @@ export function createCard(cardTransform, cardData, options) {
 }
 
 
+const zones = {}
+export function addCardToZone(cardDiv, zoneClass, slotIndex) {
+    zoneClass = zoneClass.split('.').join('')
+    if (zones[zoneClass] == null) {
+        zones[zoneClass] = []
+    }
+    zones[zoneClass].push(cardDiv)
+    cardDiv.zone = zoneClass
+
+    const zoneDiv = document.querySelector('.' + zoneClass)
+    if (slotIndex != null && zoneDiv.children.length > 0) {
+        zoneDiv.insertBefore(cardDiv, zoneDiv.childNodes[slotIndex]);
+    } else {
+        zoneDiv.appendChild(cardDiv)
+    }
+    
+}
+export function removeCardFromZone(cardDiv) {
+    const { zone } = cardDiv
+    zones[zone] = zones[zone].filter(div => div != cardDiv)
+    cardDiv.zone = null
+    cardDiv.remove()
+    return cardDiv
+}
+
+let cardsBeingHovered = []
+export function setup() {
+
+    function forEachCardInEachZone(callback) {
+        const allZonesRegistered = Object.keys(zones)
+        for (const zoneName of allZonesRegistered) {
+            const allCardsInZone = zones[zoneName]
+            for (const cardDiv of allCardsInZone) {
+                callback(cardDiv, zoneName)
+            }
+        }
+    }
+
+    document.querySelector('.board').addEventListener('mousemove', ({ clientX, clientY }) => {
+        const cardsHoveredOverNow = []
+        forEachCardInEachZone((cardDiv, zoneName) => {
+            if (areCoordsInCard(cardDiv, { x: clientX, y: clientY })) {
+                cardsHoveredOverNow.push(cardDiv)
+            }
+        })
+        const { left, both, right} = arrayDiff(cardsBeingHovered, cardsHoveredOverNow)
+        const cardsNoLongerHovered = left
+        const cardsNewlyHovered = right
+        cardsBeingHovered = cardsHoveredOverNow
+        console.log({ left, both, right})
+    })
+}
 
 // Works on minionDiv as well
 export function getCardTransform(cardDiv) {
@@ -180,7 +233,6 @@ export function getCardTransform(cardDiv) {
         visibility: currentVisibility == null? 'visible': currentVisibility
     }
 }
-
 // Works on minionDiv as well
 export function setCardTransform(cardDiv, { x, y, rotation, zIndex, isHovered, visibility }) {
     cardDiv.style.left = x != null? x + 'px': '0px'
@@ -191,7 +243,6 @@ export function setCardTransform(cardDiv, { x, y, rotation, zIndex, isHovered, v
     cardDiv.setAttribute('isHovered', isHovered == true? true: false)
     cardDiv.querySelector('.card-graphic').style.visibility = visibility
 }
-
 // Works on minionDiv as well
 export function updateCardTransform(cardDiv, statePart) {
     setCardTransform(cardDiv, {

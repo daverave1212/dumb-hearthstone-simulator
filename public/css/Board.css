@@ -18,6 +18,9 @@
     width: 100%;
     height: 14vh;
 }
+.hand {
+    border: solid orange 3px;
+}
 
 .board .enemy-minions {
     top: 30vh;

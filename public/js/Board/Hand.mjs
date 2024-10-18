@@ -1,4 +1,4 @@
-import { createCard, getCardData, getCardTransform, setCardTransform, updateCardData, updateCardTransform } from "../Card/Card.mjs"
+import { addCardToZone, createCard, getCardData, getCardTransform, setCardTransform, updateCardData, updateCardTransform } from "../Card/Card.mjs"
 import { GET_CARD_HEIGHT, GET_CARD_WIDTH } from "../Card/CardGraphicsAndSizes.mjs"
 import { getCardDataAsync, getHandCardPosition } from "../Card/CardUtils.mjs"
 import { BOARD_WIDTH, GET_BOARD_HEIGHT } from "./Board.mjs"
@@ -45,7 +45,7 @@ export async function addCardToHand(cardName) {
             startDraggingMinion(cardDiv)    // Stopping in Board.playCurrentlyClickedHandCard
         }
     })
-    document.querySelector('.hand').appendChild(card)
+    addCardToZone(card, 'hand')
 }
 
 

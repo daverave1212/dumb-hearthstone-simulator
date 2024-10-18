@@ -1,5 +1,5 @@
 
-import { createMinion, getCardData, getCardTransform, updateCardTransform } from "../Card/Card.mjs";
+import { addCardToZone, createMinion, getCardData, getCardTransform, removeCardFromZone, updateCardTransform } from "../Card/Card.mjs";
 import { MINION_WIDTH, createMinionGraphicCanvasAsync } from "../Card/CardGraphicsAndSizes.mjs";
 import { getCardDataAsync } from "../Card/CardUtils.mjs";
 import { slam } from "../Effects/Effects.mjs";
@@ -82,7 +82,7 @@ function tickMinionsInBoardTowardsPositions() {
 
 function playCurrentlyClickedHandCard() {
     stopDraggingMinion()
-    currentlyClickedHandCard.remove()
+    removeCardFromZone(currentlyClickedHandCard)
     const cardDivs = getMinionsByBoardClass('.friendly-minions')
     const slotIndex = getMinionSlotByX(cardDivs.length + 1, mouseXInBoard)
     addMinionToBoard('friendly-minions', getCardData(currentlyClickedHandCard), slotIndex)
@@ -91,10 +91,7 @@ function playCurrentlyClickedHandCard() {
 
 
 
-export function addMinionToBoard(friendlyOrEnemy, cardData, slotIndex) {
-    console.log(`Inserting minion in slot: ${slotIndex}`)
-    const boardClassName = '.' + friendlyOrEnemy.split('.').join('')
-    const minionBoardDiv = document.querySelector(boardClassName)
+export function addMinionToBoard(friendlyOrEnemy, cardData, slotIndex=0) {
     const card = createMinion({}, cardData, {
         onMouseEnter(cardDiv) {
             showInfoCard({ x: GET_MINION_INFO_X(), y: GET_MINION_INFO_Y() }, getCardData(cardDiv))
@@ -103,11 +100,7 @@ export function addMinionToBoard(friendlyOrEnemy, cardData, slotIndex) {
             hideInfoCard()
         }
     })
-    if (slotIndex == null) {
-        minionBoardDiv.appendChild(card)
-    } else {
-        minionBoardDiv.insertBefore(card, minionBoardDiv.childNodes[slotIndex]);
-    }
+    addCardToZone(card, friendlyOrEnemy, slotIndex)
 }
 
 export function setup() {
